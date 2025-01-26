@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Wishlist</title>
+    <style>
+        /* Set video as the background */
+        body {
+            font-family: 'Arial', sans-serif;
+            color: #333;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Video background styling */
+        .background-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 600px;
+            background: rgba(255, 255, 255, 0.5);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            animation: fadeIn 2s ease;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+
+        button, input[type="text"] {
+            padding: 10px 20px;
+            font-size: 1em;
+            margin: 10px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        button {
+            background-color: #ff6f61;
+            color: #fff;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #ff3b3b;
+        }
+
+        input[type="text"] {
+            width: 80%;
+            background: rgba(255, 255, 255, 0.5);
+            color: #333;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .wishlist-items {
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .wishlist-items ul {
+            padding: 0;
+            list-style-type: none;
+        }
+
+        .wishlist-items li {
+            background: rgba(255, 255, 255, 0.3);
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Video -->
+    <video class="background-video" autoplay muted loop>
+        <source src="https://media.istockphoto.com/id/114119890/video/pink-rose-petals-falling-loop.mp4?s=mp4-640x640-is&k=20&c=gfAGpZxKB_UxVDy6tEjSE1z8IEHAn69m3Sa3unW1jGs=" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <div class="container" id="question">
+        <h1>Would You Share Your Wishlist? 🌟</h1>
+        <button onclick="agreeToShare()">Yes, I'd love to</button>
+        <button onclick="declineToShare()">No, It's a Secret</button>
+    </div>
+
+    <div class="container hidden" id="wishlist">
+        <h1>Your Wishlist Becomes My To-Do List! ❤️</h1>
+        <p>Let me know what you desire, and I’ll make it happen:</p>
+        <input type="text" id="wishlistInput" placeholder="Enter your wish here">
+        <button onclick="addWishlist()">Add to Wishlist</button>
+        <div class="wishlist-items" id="wishlistItems"></div>
+        <button onclick="submitWishlist()" id="submitBtn" class="hidden">Submit All Wishes</button>
+    </div>
+
+    <div class="container hidden" id="thankYou">
+        <h1>Thank You! 🥰</h1>
+        <p>Here’s all your wishes! 📸 Take a screenshot and share it with me.</p>
+        <div id="finalWishlist"></div>
+        <button onclick="startOver()">Start Over</button>
+    </div>
+
+    <div class="container hidden" id="decline">
+        <h1>It's Okay! 😊</h1>
+        <p>Whenever you're ready, I'm here to listen. Your wishes are my priority. 💕</p>
+        <button onclick="startOver()">Start Over</button>
+    </div>
+
+    <script>
+        let wishes = [];
+
+        function agreeToShare() {
+            document.getElementById('question').classList.add('hidden');
+            document.getElementById('wishlist').classList.remove('hidden');
+        }
+
+        function declineToShare() {
+            document.getElementById('question').classList.add('hidden');
+            document.getElementById('decline').classList.remove('hidden');
+        }
+
+        function addWishlist() {
+            const wishlistInput = document.getElementById('wishlistInput');
+            const wishlistValue = wishlistInput.value.trim();
+            if (wishlistValue !== '') {
+                wishes.push(wishlistValue);
+                updateWishlistDisplay();
+                wishlistInput.value = '';
+                document.getElementById('submitBtn').classList.remove('hidden');
+            } else {
+                alert('Please enter a wish!');
+            }
+        }
+
+        function updateWishlistDisplay() {
+            const wishlistItems = document.getElementById('wishlistItems');
+            wishlistItems.innerHTML = '<ul>' + wishes.map(wish => `<li>${wish}</li>`).join('') + '</ul>';
+        }
+
+        function submitWishlist() {
+            if (wishes.length === 0) {
+                alert("Your wishlist is empty. Add at least one wish baby");
+                return;
+            }
+            document.getElementById('wishlist').classList.add('hidden');
+            document.getElementById('thankYou').classList.remove('hidden');
+            displayFinalWishlist();
+        }
+
+        function displayFinalWishlist() {
+            const finalWishlist = document.getElementById('finalWishlist');
+            finalWishlist.innerHTML = '<ul style="list-style: decimal-leading-zero;">' + wishes.map(wish => `<li style="text-align: start;">${wish}</li>`).join('') + '</ul>';
+        }
+
+        function startOver() {
+            wishes = [];
+            document.getElementById('wishlistInput').value = '';
+            document.getElementById('question').classList.remove('hidden');
+            document.getElementById('wishlist').classList.add('hidden');
+            document.getElementById('thankYou').classList.add('hidden');
+            document.getElementById('decline').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
